@@ -1,0 +1,293 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "LO Test Task API",
+        "version": "1.0.0",
+        "description": "Пример API для задачи"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:9090"
+        }
+    ],
+    "paths": {
+        "/ping": {
+            "get": {
+                "summary": "Проверка сервера",
+                "description": "Возвращает pong",
+                "responses": {
+                    "200": {
+                        "description": "Сервер работает",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "pong"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+        },
+        "/tasks": {
+            "post": {
+                "summary": "Создать задачку",
+                "description": "Создает задачку с заданными параметрами",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["id", "authorID", "status"],
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "description": "ID задачки",
+                                        "example": "1"
+                                    },
+                                    "discription": {
+                                        "type": "string",
+                                        "description": "Описание задачки",
+                                        "example": "разработать сервис с задачками от LO"
+                                    },
+                                    "authorID": {
+                                        "type": "string",
+                                        "description": "ID автора",
+                                        "example": "2"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Статус задачи",
+                                        "enum": ["open", "in progress", "code review", "in test", "ready to release", "done"],
+                                        "example": "open"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Задача успешно создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "description": "ID созданной задачки"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "status undefined"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутрення ошибка сервера",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "json: cannot unmarshal number into Go struct field CreateTaskV0Request.status of type pkg.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "Получить задачи по статусам",
+                "description": "Возвращает задачи по статусам, можно с пустым статусом, тогда вернутся все задачи",
+                "parameters": [
+                    {
+                        "name": "statuses",
+                        "in": "query",
+                        "description": "статусы задачек",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "tasks": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "description": "ID задачки",
+                                                        "example": "1"
+                                                    },
+                                                    "discription": {
+                                                        "type": "string",
+                                                        "description": "Описание задачки",
+                                                        "example": "разработать сервис с задачками от LO"
+                                                    },
+                                                    "authorID": {
+                                                        "type": "string",
+                                                        "description": "ID автора",
+                                                        "example": "2"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "description": "Статус задачи",
+                                                        "enum": ["open", "in progress", "code review", "in test", "ready to release", "done"],
+                                                        "example": "open"
+                                                    },
+                                                    "createdAt": {
+                                                        "type": "string",
+                                                        "description": "Дата создания задачки",
+                                                        "example": "2025-08-13T15:43:46.312368068Z"
+                                                    },
+                                                    "updatedAt": {
+                                                        "type": "string",
+                                                        "description": "Дата обновления задачки",
+                                                        "example": "2025-08-13T15:43:46.312368068Z"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "status undefined"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутрення ошибка сервера",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "json: cannot unmarshal number into Go struct field CreateTaskV0Request.status of type pkg.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}":{
+            "get":{
+                "summary": "Получить задачу по ID",
+                "description": "Возвращает задачу по её идентификатору",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID задачи",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "description": "ID задачки",
+                                            "example": "1"
+                                        },
+                                        "discription": {
+                                            "type": "string",
+                                            "description": "Описание задачки",
+                                            "example": "разработать сервис с задачками от LO"
+                                        },
+                                        "authorID": {
+                                            "type": "string",
+                                            "description": "ID автора",
+                                            "example": "2"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "description": "Статус задачи",
+                                            "enum": ["open", "in progress", "code review", "in test", "ready to release", "done"],
+                                            "example": "open"
+                                        },
+                                        "createdAt": {
+                                            "type": "string",
+                                            "description": "Дата создания задачки",
+                                            "example": "2025-08-13T15:43:46.312368068Z"
+                                        },
+                                        "updatedAt": {
+                                            "type": "string",
+                                            "description": "Дата обновления задачки",
+                                            "example": "2025-08-13T15:43:46.312368068Z"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Задача не найдена",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "task with this id not found"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутрення ошибка сервера",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "json: cannot unmarshal number into Go struct field CreateTaskV0Request.status of type pkg.Status"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
